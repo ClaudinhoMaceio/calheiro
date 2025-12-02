@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Orçamento">
+    <title>Clientes - Sistema de Orçamento</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-users"></i>
+                <h1>Clientes Cadastrados</h1>
+            </div>
+        </header>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="cadastro-cliente.html" class="nav-item">
+                <i class="fas fa-user-plus"></i>
+                <span>Cadastrar Cliente</span>
+            </a>
+            <a href="orcamento.html" class="nav-item">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Novo Orçamento</span>
+            </a>
+            <a href="clientes.html" class="nav-item active">
+                <i class="fas fa-users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="configuracoes.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Lista de Clientes</h2>
+                <a href="cadastro-cliente.html" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Novo Cliente
+                </a>
+            </div>
+
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar cliente por nome, telefone ou cidade...">
+            </div>
+
+            <div id="clientesList" class="clientes-grid">
+                <!-- Clientes serão carregados aqui -->
+            </div>
+
+            <div id="noResults" class="empty-state" style="display: none;">
+                <i class="fas fa-user-slash"></i>
+                <p>Nenhum cliente encontrado</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function carregarClientes() {
+            const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            const container = document.getElementById('clientesList');
+            const noResults = document.getElementById('noResults');
+
+            if (clientes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Nenhum cliente cadastrado ainda</p><a href="cadastro-cliente.html" class="btn btn-primary">Cadastrar Primeiro Cliente</a></div>';
+                return;
+            }
+
+            container.innerHTML = clientes.map(cliente => `
+                <div class="cliente-card">
+                    <div class="cliente-header">
+                        <div class="cliente-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="cliente-info">
+                            <h3>${cliente.nome}</h3>
+                            <p><i class="fas fa-phone"></i> ${cliente.telefone}</p>
+                        </div>
+                    </div>
+                    <div class="cliente-details">
+                        <p><i class="fas fa-map-marker-alt"></i> ${cliente.endereco}</p>
+                        <p><i class="fas fa-city"></i> ${cliente.cidade} - ${cliente.estado}</p>
+                        ${cliente.email ? `<p><i class="fas fa-envelope"></i> ${cliente.email}</p>` : ''}
+                        <p class="data-cadastro"><i class="fas fa-calendar"></i> Cadastrado em ${cliente.dataCadastro}</p>
+                    </div>
+                    <div class="cliente-actions">
+                        <a href="orcamento.html?cliente=${cliente.id}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-file-invoice-dollar"></i> Criar Orçamento
+                        </a>
+                        <button onclick="excluirCliente(${cliente.id})" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            noResults.style.display = 'none';
+        }
+
+        function excluirCliente(id) {
+            if (confirm('Tem certeza que deseja excluir este cliente?')) {
+                const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+                const novosClientes = clientes.filter(c => c.id !== id);
+                localStorage.setItem('clientes', JSON.stringify(novosClientes));
+                carregarClientes();
+            }
+        }
+
+        // Busca
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const termo = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.cliente-card');
+            let encontrados = 0;
+
+            cards.forEach(card => {
+                const texto = card.textContent.toLowerCase();
+                if (texto.includes(termo)) {
+                    card.style.display = 'block';
+                    encontrados++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('noResults').style.display = encontrados === 0 && termo !== '' ? 'block' : 'none';
+        });
+
+        carregarClientes();
+
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
+

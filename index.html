@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Orçamento">
+    <meta name="description" content="Sistema completo de orçamento para calha, gesso liso, gesso de teto e drywall">
+    <title>Sistema de Orçamento - Calha e Gesso</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <h1>Sistema de Orçamento</h1>
+            </div>
+            <p class="subtitle">Calha, Gesso Liso, Gesso de Teto e Drywall</p>
+        </header>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="cadastro-cliente.html" class="nav-item">
+                <i class="fas fa-user-plus"></i>
+                <span>Cadastrar Cliente</span>
+            </a>
+            <a href="orcamento.html" class="nav-item">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Novo Orçamento</span>
+            </a>
+            <a href="clientes.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="configuracoes.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <div class="welcome-card">
+                <h2>Bem-vindo ao Sistema de Orçamento</h2>
+                <p>Gerencie seus orçamentos de forma profissional e eficiente</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalClientes">0</h3>
+                        <p>Clientes Cadastrados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalOrcamentos">0</h3>
+                        <p>Orçamentos Gerados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="valorTotal">R$ 0,00</h3>
+                        <p>Valor Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3>Ações Rápidas</h3>
+                <div class="actions-grid">
+                    <a href="cadastro-cliente.html" class="action-card">
+                        <i class="fas fa-user-plus"></i>
+                        <h4>Cadastrar Cliente</h4>
+                        <p>Adicione um novo cliente ao sistema</p>
+                    </a>
+                    <a href="orcamento.html" class="action-card">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <h4>Criar Orçamento</h4>
+                        <p>Gere um novo orçamento</p>
+                    </a>
+                    <a href="clientes.html" class="action-card">
+                        <i class="fas fa-list"></i>
+                        <h4>Ver Clientes</h4>
+                        <p>Visualize todos os clientes</p>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Atualizar estatísticas na página inicial
+        function atualizarEstatisticas() {
+            const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            const orcamentos = JSON.parse(localStorage.getItem('orcamentos') || '[]');
+            
+            document.getElementById('totalClientes').textContent = clientes.length;
+            document.getElementById('totalOrcamentos').textContent = orcamentos.length;
+            
+            const valorTotal = orcamentos.reduce((sum, orc) => sum + (parseFloat(orc.total) || 0), 0);
+            document.getElementById('valorTotal').textContent = formatarMoeda(valorTotal);
+        }
+        
+        atualizarEstatisticas();
+
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
+

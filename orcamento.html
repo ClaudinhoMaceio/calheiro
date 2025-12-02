@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Orçamento">
+    <title>Novo Orçamento - Sistema de Orçamento</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <h1>Novo Orçamento</h1>
+            </div>
+        </header>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="cadastro-cliente.html" class="nav-item">
+                <i class="fas fa-user-plus"></i>
+                <span>Cadastrar Cliente</span>
+            </a>
+            <a href="orcamento.html" class="nav-item active">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Novo Orçamento</span>
+            </a>
+            <a href="clientes.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="configuracoes.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <form id="formOrcamento" class="orcamento-form">
+                <!-- Seleção de Cliente -->
+                <div class="form-section">
+                    <h2><i class="fas fa-user"></i> Cliente</h2>
+                    <div class="form-group">
+                        <label for="clienteSelect">Selecione o Cliente *</label>
+                        <select id="clienteSelect" name="cliente" required>
+                            <option value="">Selecione um cliente...</option>
+                        </select>
+                        <a href="cadastro-cliente.html" class="link-new-client">
+                            <i class="fas fa-plus"></i> Cadastrar novo cliente
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Cálculo de Metragens -->
+                <div class="form-section">
+                    <h2><i class="fas fa-ruler-combined"></i> Cálculo de Metragens</h2>
+                    <div class="metragem-calculator">
+                        <div class="calc-item">
+                            <label>Largura (m)</label>
+                            <input type="number" id="largura" step="0.01" min="0" placeholder="0.00" oninput="calcularArea()">
+                        </div>
+                        <div class="calc-item">
+                            <label>Comprimento (m)</label>
+                            <input type="number" id="comprimento" step="0.01" min="0" placeholder="0.00" oninput="calcularArea()">
+                        </div>
+                        <div class="calc-item">
+                            <label>Altura (m) - Opcional</label>
+                            <input type="number" id="altura" step="0.01" min="0" placeholder="0.00" oninput="calcularArea()">
+                        </div>
+                        <div class="calc-result">
+                            <label>Área Total (m²)</label>
+                            <input type="text" id="areaTotal" readonly value="0.00 m²">
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="adicionarMetragem()">
+                            <i class="fas fa-plus"></i> Adicionar Metragem
+                        </button>
+                    </div>
+                    <div id="metragensAdicionadas" class="metragens-list"></div>
+                </div>
+
+                <!-- Serviços e Materiais -->
+                <div class="form-section">
+                    <h2><i class="fas fa-tools"></i> Serviços e Materiais</h2>
+                    
+                    <!-- Calha -->
+                    <div class="servico-category">
+                        <h3><i class="fas fa-water"></i> Calha</h3>
+                        <div class="materiais-grid">
+                            <div class="material-item">
+                                <label>Metragem Linear (m)</label>
+                                <input type="number" class="material-metragem" data-servico="calha" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('calha')">
+                            </div>
+                            <div class="material-item">
+                                <label>Valor por Metro (R$)</label>
+                                <input type="number" class="material-valor" data-servico="calha" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('calha')">
+                            </div>
+                            <div class="material-item">
+                                <label>Total Calha (R$)</label>
+                                <input type="text" id="totalCalha" readonly value="R$ 0,00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gesso Liso -->
+                    <div class="servico-category">
+                        <h3><i class="fas fa-paint-roller"></i> Gesso Liso</h3>
+                        <div class="materiais-grid">
+                            <div class="material-item">
+                                <label>Área (m²)</label>
+                                <input type="number" class="material-metragem" data-servico="gesso-liso" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('gesso-liso')">
+                            </div>
+                            <div class="material-item">
+                                <label>Valor por m² (R$)</label>
+                                <input type="number" class="material-valor" data-servico="gesso-liso" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('gesso-liso')">
+                            </div>
+                            <div class="material-item">
+                                <label>Total Gesso Liso (R$)</label>
+                                <input type="text" id="totalGessoLiso" readonly value="R$ 0,00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gesso de Teto -->
+                    <div class="servico-category">
+                        <h3><i class="fas fa-layer-group"></i> Gesso de Teto</h3>
+                        <div class="materiais-grid">
+                            <div class="material-item">
+                                <label>Área (m²)</label>
+                                <input type="number" class="material-metragem" data-servico="gesso-teto" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('gesso-teto')">
+                            </div>
+                            <div class="material-item">
+                                <label>Valor por m² (R$)</label>
+                                <input type="number" class="material-valor" data-servico="gesso-teto" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('gesso-teto')">
+                            </div>
+                            <div class="material-item">
+                                <label>Total Gesso Teto (R$)</label>
+                                <input type="text" id="totalGessoTeto" readonly value="R$ 0,00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Drywall -->
+                    <div class="servico-category">
+                        <h3><i class="fas fa-th"></i> Placas de Drywall</h3>
+                        <div class="materiais-grid">
+                            <div class="material-item">
+                                <label>Área (m²)</label>
+                                <input type="number" class="material-metragem" data-servico="drywall" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('drywall')">
+                            </div>
+                            <div class="material-item">
+                                <label>Valor por m² (R$)</label>
+                                <input type="number" class="material-valor" data-servico="drywall" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalServico('drywall')">
+                            </div>
+                            <div class="material-item">
+                                <label>Total Drywall (R$)</label>
+                                <input type="text" id="totalDrywall" readonly value="R$ 0,00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Materiais Adicionais -->
+                    <div class="servico-category">
+                        <h3><i class="fas fa-box"></i> Materiais Adicionais</h3>
+                        <div id="materiaisAdicionais"></div>
+                        <button type="button" class="btn btn-secondary" onclick="adicionarMaterial()">
+                            <i class="fas fa-plus"></i> Adicionar Material
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mão de Obra -->
+                <div class="form-section">
+                    <h2><i class="fas fa-hard-hat"></i> Mão de Obra</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="maoObra">Valor da Mão de Obra (R$)</label>
+                            <input type="number" id="maoObra" step="0.01" min="0" placeholder="0.00" oninput="calcularTotalGeral()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div class="form-section">
+                    <h2><i class="fas fa-sticky-note"></i> Observações</h2>
+                    <div class="form-group">
+                        <textarea id="observacoes" name="observacoes" rows="4" placeholder="Observações adicionais sobre o orçamento..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Resumo Total -->
+                <div class="form-section total-section">
+                    <div class="total-card">
+                        <h2>Resumo do Orçamento</h2>
+                        <div class="total-item">
+                            <span>Calha:</span>
+                            <span id="resumoCalha">R$ 0,00</span>
+                        </div>
+                        <div class="total-item">
+                            <span>Gesso Liso:</span>
+                            <span id="resumoGessoLiso">R$ 0,00</span>
+                        </div>
+                        <div class="total-item">
+                            <span>Gesso de Teto:</span>
+                            <span id="resumoGessoTeto">R$ 0,00</span>
+                        </div>
+                        <div class="total-item">
+                            <span>Drywall:</span>
+                            <span id="resumoDrywall">R$ 0,00</span>
+                        </div>
+                        <div class="total-item">
+                            <span>Materiais Adicionais:</span>
+                            <span id="resumoMateriaisAdicionais">R$ 0,00</span>
+                        </div>
+                        <div class="total-item">
+                            <span>Mão de Obra:</span>
+                            <span id="resumoMaoObra">R$ 0,00</span>
+                        </div>
+                        <div class="total-item total-final">
+                            <span>TOTAL:</span>
+                            <span id="totalGeral">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-info" onclick="previewOrcamento()">
+                        <i class="fas fa-eye"></i> Visualizar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-file-pdf"></i> Gerar PDF e Enviar
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Modal de Preview -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let metragensAdicionadas = [];
+        let materiaisAdicionais = [];
+        let materialCounter = 0;
+
+        // Carregar clientes no select
+        function carregarClientes() {
+            const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            const select = document.getElementById('clienteSelect');
+            
+            select.innerHTML = '<option value="">Selecione um cliente...</option>';
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.id;
+                option.textContent = `${cliente.nome} - ${cliente.telefone}`;
+                select.appendChild(option);
+            });
+
+            // Verificar se há cliente na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const clienteId = urlParams.get('cliente');
+            if (clienteId) {
+                select.value = clienteId;
+            }
+        }
+
+        // Calcular área
+        function calcularArea() {
+            const largura = parseFloat(document.getElementById('largura').value) || 0;
+            const comprimento = parseFloat(document.getElementById('comprimento').value) || 0;
+            const altura = parseFloat(document.getElementById('altura').value) || 0;
+            
+            let area = largura * comprimento;
+            if (altura > 0) {
+                // Se tiver altura, calcula área de parede (perímetro * altura)
+                const perimetro = 2 * (largura + comprimento);
+                area += perimetro * altura;
+            }
+            
+            document.getElementById('areaTotal').value = area.toFixed(2) + ' m²';
+        }
+
+        // Adicionar metragem calculada
+        function adicionarMetragem() {
+            const area = parseFloat(document.getElementById('areaTotal').value) || 0;
+            if (area > 0) {
+                metragensAdicionadas.push(area);
+                atualizarListaMetragens();
+                document.getElementById('largura').value = '';
+                document.getElementById('comprimento').value = '';
+                document.getElementById('altura').value = '';
+                document.getElementById('areaTotal').value = '0.00 m²';
+            } else {
+                alert('Calcule uma área primeiro!');
+            }
+        }
+
+        function atualizarListaMetragens() {
+            const container = document.getElementById('metragensAdicionadas');
+            if (metragensAdicionadas.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const total = metragensAdicionadas.reduce((sum, m) => sum + m, 0);
+            container.innerHTML = `
+                <div class="metragem-item">
+                    <span>Metragens adicionadas: ${metragensAdicionadas.map(m => m.toFixed(2) + ' m²').join(', ')}</span>
+                    <span class="total-metragem">Total: ${total.toFixed(2)} m²</span>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="limparMetragens()">
+                        <i class="fas fa-trash"></i> Limpar
+                    </button>
+                </div>
+            `;
+        }
+
+        function limparMetragens() {
+            metragensAdicionadas = [];
+            atualizarListaMetragens();
+        }
+
+        // Calcular total por serviço
+        function calcularTotalServico(servico) {
+            const metragem = parseFloat(document.querySelector(`.material-metragem[data-servico="${servico}"]`).value) || 0;
+            const valor = parseFloat(document.querySelector(`.material-valor[data-servico="${servico}"]`).value) || 0;
+            const total = metragem * valor;
+            
+            const totalId = {
+                'calha': 'totalCalha',
+                'gesso-liso': 'totalGessoLiso',
+                'gesso-teto': 'totalGessoTeto',
+                'drywall': 'totalDrywall'
+            }[servico];
+            
+            if (totalId) {
+                document.getElementById(totalId).value = formatarMoeda(total);
+            }
+            
+            calcularTotalGeral();
+        }
+
+        // Adicionar material adicional
+        function adicionarMaterial() {
+            materialCounter++;
+            const container = document.getElementById('materiaisAdicionais');
+            const div = document.createElement('div');
+            div.className = 'material-adicional';
+            div.id = `material-${materialCounter}`;
+            div.innerHTML = `
+                <div class="materiais-grid">
+                    <div class="material-item">
+                        <label>Descrição</label>
+                        <input type="text" class="material-desc" placeholder="Nome do material" oninput="calcularMateriaisAdicionais()">
+                    </div>
+                    <div class="material-item">
+                        <label>Quantidade</label>
+                        <input type="number" class="material-qtd" step="0.01" min="0" placeholder="0" oninput="calcularMateriaisAdicionais()">
+                    </div>
+                    <div class="material-item">
+                        <label>Valor Unitário (R$)</label>
+                        <input type="number" class="material-valor-unit" step="0.01" min="0" placeholder="0.00" oninput="calcularMateriaisAdicionais()">
+                    </div>
+                    <div class="material-item">
+                        <label>Total (R$)</label>
+                        <input type="text" class="material-total" readonly value="R$ 0,00">
+                    </div>
+                    <div class="material-item">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removerMaterial(${materialCounter})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function removerMaterial(id) {
+            document.getElementById(`material-${id}`).remove();
+            calcularMateriaisAdicionais();
+        }
+
+        function calcularMateriaisAdicionais() {
+            const materiais = document.querySelectorAll('.material-adicional');
+            let total = 0;
+            
+            materiais.forEach(material => {
+                const qtd = parseFloat(material.querySelector('.material-qtd').value) || 0;
+                const valor = parseFloat(material.querySelector('.material-valor-unit').value) || 0;
+                const subtotal = qtd * valor;
+                material.querySelector('.material-total').value = formatarMoeda(subtotal);
+                total += subtotal;
+            });
+            
+            calcularTotalGeral();
+        }
+
+        // Calcular total geral
+        function calcularTotalGeral() {
+            const calha = parseFloat(document.getElementById('totalCalha').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const gessoLiso = parseFloat(document.getElementById('totalGessoLiso').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const gessoTeto = parseFloat(document.getElementById('totalGessoTeto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const drywall = parseFloat(document.getElementById('totalDrywall').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const maoObra = parseFloat(document.getElementById('maoObra').value) || 0;
+            
+            // Calcular materiais adicionais
+            let materiaisAdic = 0;
+            document.querySelectorAll('.material-total').forEach(input => {
+                const valor = parseFloat(input.value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                materiaisAdic += valor;
+            });
+            
+            const total = calha + gessoLiso + gessoTeto + drywall + maoObra + materiaisAdic;
+            
+            // Atualizar resumo
+            document.getElementById('resumoCalha').textContent = formatarMoeda(calha);
+            document.getElementById('resumoGessoLiso').textContent = formatarMoeda(gessoLiso);
+            document.getElementById('resumoGessoTeto').textContent = formatarMoeda(gessoTeto);
+            document.getElementById('resumoDrywall').textContent = formatarMoeda(drywall);
+            document.getElementById('resumoMateriaisAdicionais').textContent = formatarMoeda(materiaisAdic);
+            document.getElementById('resumoMaoObra').textContent = formatarMoeda(maoObra);
+            document.getElementById('totalGeral').textContent = formatarMoeda(total);
+        }
+
+        // Preview do orçamento
+        function previewOrcamento() {
+            const clienteId = document.getElementById('clienteSelect').value;
+            if (!clienteId) {
+                alert('Selecione um cliente primeiro!');
+                return;
+            }
+            
+            const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            const cliente = clientes.find(c => c.id == clienteId);
+            
+            if (!cliente) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+            
+            const preview = gerarPreviewOrcamento(cliente);
+            document.getElementById('previewContent').innerHTML = preview;
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        // Submeter formulário
+        document.getElementById('formOrcamento').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const clienteId = document.getElementById('clienteSelect').value;
+            if (!clienteId) {
+                alert('Selecione um cliente!');
+                return;
+            }
+            
+            const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            const cliente = clientes.find(c => c.id == clienteId);
+            
+            if (!cliente) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+            
+            const totalGeral = parseFloat(document.getElementById('totalGeral').textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            
+            if (totalGeral === 0) {
+                alert('O orçamento precisa ter um valor maior que zero!');
+                return;
+            }
+            
+            // Gerar PDF e enviar
+            gerarPDFEEnviar(cliente);
+        });
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        carregarClientes();
+
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
+

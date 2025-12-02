@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Orçamento">
+    <title>Configurações - Sistema de Orçamento</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-cog"></i>
+                <h1>Configurações</h1>
+            </div>
+        </header>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="cadastro-cliente.html" class="nav-item">
+                <i class="fas fa-user-plus"></i>
+                <span>Cadastrar Cliente</span>
+            </a>
+            <a href="orcamento.html" class="nav-item">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Novo Orçamento</span>
+            </a>
+            <a href="clientes.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="configuracoes.html" class="nav-item active">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <div class="config-section">
+                <h2><i class="fas fa-database"></i> Backup e Restauração</h2>
+                <p class="section-description">Faça backup dos seus dados ou restaure um backup anterior. Todos os dados são salvos localmente no dispositivo.</p>
+                
+                <div class="backup-actions">
+                    <div class="backup-card">
+                        <div class="backup-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3>Fazer Backup</h3>
+                        <p>Exporte todos os dados (clientes e orçamentos) para um arquivo JSON</p>
+                        <button class="btn btn-primary" onclick="fazerBackup()">
+                            <i class="fas fa-download"></i> Fazer Backup
+                        </button>
+                    </div>
+
+                    <div class="backup-card">
+                        <div class="backup-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <h3>Restaurar Backup</h3>
+                        <p>Importe um arquivo de backup para restaurar seus dados</p>
+                        <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="restaurarBackup(event)">
+                        <button class="btn btn-info" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-upload"></i> Restaurar Backup
+                        </button>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <p><strong>Importante:</strong> Ao restaurar um backup, todos os dados atuais serão substituídos pelos dados do backup. Certifique-se de fazer um backup antes de restaurar.</p>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h2><i class="fas fa-chart-bar"></i> Estatísticas do Sistema</h2>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-label">Clientes Cadastrados:</span>
+                        <span class="stat-value" id="statClientes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Orçamentos Gerados:</span>
+                        <span class="stat-value" id="statOrcamentos">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Valor Total dos Orçamentos:</span>
+                        <span class="stat-value" id="statValorTotal">R$ 0,00</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Tamanho dos Dados:</span>
+                        <span class="stat-value" id="statTamanho">0 KB</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Último Backup:</span>
+                        <span class="stat-value" id="statUltimoBackup">Nunca</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h2><i class="fas fa-mobile-alt"></i> Instalar como App</h2>
+                <p class="section-description">Instale este sistema como um aplicativo no seu celular para acesso rápido e funcionamento offline.</p>
+                
+                <div class="install-instructions">
+                    <div class="instruction-item">
+                        <h4><i class="fab fa-android"></i> Android (Chrome)</h4>
+                        <ol>
+                            <li>Abra o menu do navegador (três pontos)</li>
+                            <li>Selecione "Adicionar à tela inicial" ou "Instalar app"</li>
+                            <li>Confirme a instalação</li>
+                        </ol>
+                    </div>
+                    <div class="instruction-item">
+                        <h4><i class="fab fa-apple"></i> iPhone/iPad (Safari)</h4>
+                        <ol>
+                            <li>Toque no botão de compartilhar (quadrado com seta)</li>
+                            <li>Role para baixo e selecione "Adicionar à Tela de Início"</li>
+                            <li>Toque em "Adicionar"</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div id="installPrompt" class="install-prompt" style="display: none;">
+                    <p>Você pode instalar este app no seu dispositivo!</p>
+                    <button class="btn btn-primary" id="installButton">
+                        <i class="fas fa-download"></i> Instalar App
+                    </button>
+                </div>
+            </div>
+
+            <div class="config-section danger-section">
+                <h2><i class="fas fa-exclamation-triangle"></i> Área de Perigo</h2>
+                <p class="section-description">Ações que não podem ser desfeitas. Use com cuidado!</p>
+                
+                <div class="danger-actions">
+                    <div class="danger-card">
+                        <div class="danger-icon">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <h3>Resetar Sistema</h3>
+                        <p><strong>Atenção:</strong> Esta ação irá apagar TODOS os dados do sistema, incluindo clientes e orçamentos. Esta ação não pode ser desfeita!</p>
+                        <p class="warning-text">Certifique-se de fazer um backup antes de resetar.</p>
+                        <button class="btn btn-danger" onclick="resetarSistema()">
+                            <i class="fas fa-trash-alt"></i> Resetar Sistema
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let deferredPrompt;
+
+        // Atualizar estatísticas
+        function atualizarEstatisticas() {
+            const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            const orcamentos = JSON.parse(localStorage.getItem('orcamentos') || '[]');
+            
+            document.getElementById('statClientes').textContent = clientes.length;
+            document.getElementById('statOrcamentos').textContent = orcamentos.length;
+            
+            const valorTotal = orcamentos.reduce((sum, orc) => sum + (parseFloat(orc.total) || 0), 0);
+            document.getElementById('statValorTotal').textContent = formatarMoeda(valorTotal);
+            
+            // Calcular tamanho dos dados
+            const dados = {
+                clientes: clientes,
+                orcamentos: orcamentos
+            };
+            const tamanho = new Blob([JSON.stringify(dados)]).size;
+            document.getElementById('statTamanho').textContent = (tamanho / 1024).toFixed(2) + ' KB';
+            
+            // Último backup
+            const ultimoBackup = localStorage.getItem('ultimoBackup');
+            document.getElementById('statUltimoBackup').textContent = ultimoBackup || 'Nunca';
+        }
+
+        // Fazer backup
+        function fazerBackup() {
+            try {
+                const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+                const orcamentos = JSON.parse(localStorage.getItem('orcamentos') || '[]');
+                
+                const backup = {
+                    versao: '1.0',
+                    data: new Date().toISOString(),
+                    dataFormatada: new Date().toLocaleString('pt-BR'),
+                    clientes: clientes,
+                    orcamentos: orcamentos
+                };
+                
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `backup_orcamento_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // Salvar data do último backup
+                localStorage.setItem('ultimoBackup', new Date().toLocaleString('pt-BR'));
+                atualizarEstatisticas();
+                
+                alert('Backup realizado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao fazer backup:', error);
+                alert('Erro ao fazer backup. Tente novamente.');
+            }
+        }
+
+        // Restaurar backup
+        function restaurarBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!confirm('ATENÇÃO: Ao restaurar este backup, todos os dados atuais serão substituídos. Deseja continuar?')) {
+                event.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backup = JSON.parse(e.target.result);
+                    
+                    if (!backup.clientes || !backup.orcamentos) {
+                        throw new Error('Arquivo de backup inválido');
+                    }
+                    
+                    // Verificar novamente antes de restaurar
+                    if (!confirm(`Este backup contém ${backup.clientes.length} clientes e ${backup.orcamentos.length} orçamentos. Deseja realmente restaurar?`)) {
+                        event.target.value = '';
+                        return;
+                    }
+                    
+                    // Restaurar dados
+                    localStorage.setItem('clientes', JSON.stringify(backup.clientes));
+                    localStorage.setItem('orcamentos', JSON.stringify(backup.orcamentos));
+                    
+                    if (backup.dataFormatada) {
+                        localStorage.setItem('ultimoBackup', backup.dataFormatada);
+                    }
+                    
+                    atualizarEstatisticas();
+                    alert('Backup restaurado com sucesso!');
+                    event.target.value = '';
+                } catch (error) {
+                    console.error('Erro ao restaurar backup:', error);
+                    alert('Erro ao restaurar backup. Verifique se o arquivo é válido.');
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Resetar sistema
+        function resetarSistema() {
+            const confirmacao1 = confirm('ATENÇÃO: Você está prestes a APAGAR TODOS os dados do sistema!\n\nIsso inclui:\n- Todos os clientes cadastrados\n- Todos os orçamentos gerados\n\nEsta ação NÃO pode ser desfeita!');
+            
+            if (!confirmacao1) return;
+            
+            const confirmacao2 = confirm('Tem CERTEZA ABSOLUTA que deseja resetar o sistema?\n\nDigite "RESETAR" no próximo prompt para confirmar.');
+            
+            if (!confirmacao2) return;
+            
+            const confirmacao3 = prompt('Digite "RESETAR" (em maiúsculas) para confirmar:');
+            
+            if (confirmacao3 !== 'RESETAR') {
+                alert('Reset cancelado. A palavra não confere.');
+                return;
+            }
+            
+            // Fazer backup automático antes de resetar
+            try {
+                const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+                const orcamentos = JSON.parse(localStorage.getItem('orcamentos') || '[]');
+                
+                const backup = {
+                    versao: '1.0',
+                    data: new Date().toISOString(),
+                    dataFormatada: new Date().toLocaleString('pt-BR'),
+                    clientes: clientes,
+                    orcamentos: orcamentos
+                };
+                
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `backup_antes_reset_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Erro ao fazer backup automático:', error);
+            }
+            
+            // Resetar dados
+            localStorage.removeItem('clientes');
+            localStorage.removeItem('orcamentos');
+            localStorage.removeItem('ultimoBackup');
+            
+            atualizarEstatisticas();
+            alert('Sistema resetado com sucesso! Um backup automático foi salvo antes do reset.');
+            
+            // Redirecionar para página inicial
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        // Instalar PWA
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').style.display = 'block';
+        });
+
+        document.getElementById('installButton').addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                alert('App instalado com sucesso!');
+            }
+            
+            deferredPrompt = null;
+            document.getElementById('installPrompt').style.display = 'none';
+        });
+
+        // Verificar se já está instalado
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            document.getElementById('installPrompt').style.display = 'none';
+        }
+
+        // Atualizar estatísticas ao carregar
+        atualizarEstatisticas();
+
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
+
