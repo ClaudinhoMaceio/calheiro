@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Orçamento">
-    <title>Novo Orçamento - Sistema de Orçamento</title>
+    <meta name="apple-mobile-web-app-title" content="Planeta Gesso e Calha">
+    <title>Novo Orçamento - Planeta Gesso e Calha</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,8 +17,13 @@
     <div class="container">
         <header class="header">
             <div class="logo">
-                <i class="fas fa-file-invoice-dollar"></i>
-                <h1>Novo Orçamento</h1>
+                <div class="logo-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Planeta Gesso e Calha</h1>
+                    <p class="subtitle">Novo Orçamento</p>
+                </div>
             </div>
         </header>
 
@@ -64,6 +69,9 @@
                 <!-- Cálculo de Metragens -->
                 <div class="form-section">
                     <h2><i class="fas fa-ruler-combined"></i> Cálculo de Metragens</h2>
+                    <p class="section-description" style="margin-bottom: 20px; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> Cálculo: (Largura + Comprimento) × Altura = Total em m²
+                    </p>
                     <div class="metragem-calculator">
                         <div class="calc-item">
                             <label>Largura (m)</label>
@@ -74,7 +82,7 @@
                             <input type="number" id="comprimento" step="0.01" min="0" placeholder="0.00" oninput="calcularArea()">
                         </div>
                         <div class="calc-item">
-                            <label>Altura (m)</label>
+                            <label>Altura (m) - Multiplicador</label>
                             <input type="number" id="altura" step="0.01" min="0" placeholder="1.00" value="1" oninput="calcularArea()">
                         </div>
                         <div class="calc-result">
@@ -284,14 +292,15 @@
             }
         }
 
-        // Calcular área
+        // Calcular área: (largura + comprimento) × altura
         function calcularArea() {
             const largura = parseFloat(document.getElementById('largura').value) || 0;
             const comprimento = parseFloat(document.getElementById('comprimento').value) || 0;
-            const altura = parseFloat(document.getElementById('altura').value) || 1; // Se não informar altura, considera 1
+            const altura = parseFloat(document.getElementById('altura').value) || 1;
             
-            // Cálculo: largura × comprimento × altura
-            const area = largura * comprimento * altura;
+            // Soma largura + comprimento, depois multiplica pela altura
+            const soma = largura + comprimento;
+            const area = soma * altura;
             
             document.getElementById('areaTotal').value = area.toFixed(2) + ' m²';
         }

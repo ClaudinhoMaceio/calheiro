@@ -41,7 +41,8 @@ function gerarPreviewOrcamento(cliente) {
     let html = `
         <div class="preview-orcamento">
             <div class="preview-header">
-                <h2>ORÇAMENTO</h2>
+                <h2>Planeta Gesso e Calha</h2>
+                <h3>ORÇAMENTO</h3>
                 <p>Data: ${dataAtual} às ${horaAtual}</p>
             </div>
 
@@ -124,20 +125,24 @@ function gerarPDF(cliente) {
     
     // Cabeçalho
     doc.setFillColor(...primaryColor);
-    doc.rect(0, 0, 210, 40, 'F');
+    doc.rect(0, 0, 210, 50, 'F');
     
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(24);
+    doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.text('ORÇAMENTO', 105, 20, { align: 'center' });
+    doc.text('Planeta Gesso e Calha', 105, 15, { align: 'center' });
     
-    doc.setFontSize(12);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ORÇAMENTO', 105, 25, { align: 'center' });
+    
+    doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     const dataAtual = new Date().toLocaleDateString('pt-BR');
     const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    doc.text(`Data: ${dataAtual} às ${horaAtual}`, 105, 30, { align: 'center' });
+    doc.text(`Data: ${dataAtual} às ${horaAtual}`, 105, 35, { align: 'center' });
     
-    let y = 50;
+    let y = 60;
     
     // Dados do Cliente
     doc.setTextColor(...textColor);

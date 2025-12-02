@@ -1,6 +1,6 @@
 {
-  "name": "Sistema de Orçamento - Calha e Gesso",
-  "short_name": "Orçamento",
+  "name": "Planeta Gesso e Calha - Sistema de Orçamento",
+  "short_name": "Planeta Gesso",
   "description": "Sistema completo de orçamento para calha, gesso liso, gesso de teto e drywall",
   "start_url": "./index.html",
   "display": "standalone",
